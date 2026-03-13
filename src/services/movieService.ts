@@ -8,18 +8,23 @@ const endpoint = "search/movie";
 
 const myApiKey = import.meta.env.VITE_TMDB_TOKEN;
 
-interface MoviesHttpResponse {
+interface MoviesResponse {
   results: Movie[];
+  page: number;
+  total_pages: number;
 }
 
-export default async function fetchMovies(query: string): Promise<Movie[]> {
+export default async function fetchMovies(
+  query: string,
+  page: number,
+): Promise<MoviesResponse> {
   const config: AxiosRequestConfig = {
-    params: { query },
+    params: { query, page },
     headers: {
       Authorization: `Bearer ${myApiKey}`,
     },
   };
 
-  const response = await axios.get<MoviesHttpResponse>(endpoint, config);
-  return response.data.results;
+  const response = await axios.get<MoviesResponse>(endpoint, config);
+  return response.data;
 }
